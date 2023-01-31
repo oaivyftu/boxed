@@ -1,10 +1,15 @@
 import { OutputAreaProps } from "./types";
 import "./styles.css"
+import { useAppSelector } from "../../app/hooks";
+import { User } from "../../app/commonTypes";
+import { selectCheckedRows } from "../Table/tableSlice";
 
 function OutputArea(props: OutputAreaProps) {
+  const checkedRows: User[] = useAppSelector(selectCheckedRows)
+  if (!checkedRows.length) return null
   return (
     <div className="output-container">
-      <code>{`[{"id":1,"avatar":"https://robohash.org/minimarerumest.png?size=50x50&set=set1","first_name":"Ezechiel","last_name":"Gosson","email":"egosson0@wikipedia.org","gender":"Male","ip_address":"154.34.211.40"}]`}</code>
+      <code>{JSON.stringify(checkedRows)}</code>
     </div>
   )
 }

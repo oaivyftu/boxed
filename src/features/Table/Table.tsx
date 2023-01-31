@@ -5,9 +5,10 @@ import SearchInput from "../SearchInput/SearchInput";
 import Pagination from "../Pagination/Pagination";
 import OutputArea from "../OutputArea/OutputArea";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fetchUsersAsync, sortByFname } from "./tableSlice";
+import { deselectARow, fetchUsersAsync, selectARow, selectCheckedRows, sortByFname } from "./tableSlice";
 import { User } from "../../app/commonTypes";
 import { urlParams2Object } from "../../app/utils";
+import { DEFAULT_MAX_RECORDS_PER_PAGE } from "../../app/constants";
 
 function Table(props: TableProps) {
   const dispatch = useAppDispatch()
@@ -15,15 +16,25 @@ function Table(props: TableProps) {
   const users = useAppSelector(state => state.table.data)
   const error = useAppSelector(state => state.table.error)
   const sort = useAppSelector(state => state.table.sort)
+  const checkedRows: User[] = useAppSelector(selectCheckedRows)
 
   useEffect(() => {
     if (tableStatus === 'idle') {
       const query = new URLSearchParams(window.location.search)
       if (!query.get('page')) query.set('page', '1')
+      if (!query.get('limit')) query.set('limit', String(DEFAULT_MAX_RECORDS_PER_PAGE))
       dispatch(fetchUsersAsync(urlParams2Object(query)))
       window.history.pushState("", "", `?${query.toString()}`)
     }
   }, [tableStatus, dispatch])
+
+  const onRowCheck = (e: React.ChangeEvent<HTMLInputElement>, user: User) => {
+    if (e.target.checked) {
+      dispatch(selectARow(user))
+    } else {
+      dispatch(deselectARow(user))
+    }
+  }
 
   const table: ReactNode = (
     <table className="table-main">
@@ -45,18 +56,21 @@ function Table(props: TableProps) {
         {tableStatus === 'succeeded' && (
           <>
             {users.length === 0 && "No data"}
-            {users.map(({ id, email, avatar, gender, first_name, last_name, ip_address }: User) => (
-              <tr className="table-row" key={id}>
-                <td><input type="checkbox" /></td>
-                <td>{id}</td>
-                <td><img src={avatar} alt="" /></td>
-                <td>{first_name}</td>
-                <td>{last_name}</td>
-                <td>{email}</td>
-                <td>{gender}</td>
-                <td>{ip_address}</td>
-              </tr>
-            ))}
+            {users.map((user: User) => {
+              const { id, email, avatar, gender, first_name, last_name, ip_address } = user
+              return (
+                <tr className="table-row" key={id}>
+                  <td><input type="checkbox" checked={checkedRows.findIndex(row => row.id === id) !== -1} onChange={e => onRowCheck(e, user)} /></td>
+                  <td>{id}</td>
+                  <td><img src={avatar} alt="" /></td>
+                  <td>{first_name}</td>
+                  <td>{last_name}</td>
+                  <td>{email}</td>
+                  <td>{gender}</td>
+                  <td>{ip_address}</td>
+                </tr>
+              )
+            })}
           </>
         )}
       </tbody>

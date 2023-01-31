@@ -1,12 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { GetUsersParams, User } from "../../app/commonTypes";
 import ApiClient from "../../app/ApiClient";
+import { RootState } from "../../app/store";
 
 export interface TableState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   data: User[];
   sort: 'asc' | 'desc',
   totalRows: number;
+  checkedRows: User[];
   error?: string;
 }
 
@@ -15,6 +17,7 @@ const initialState: TableState = {
   data: [],
   totalRows: 0,
   sort: 'asc',
+  checkedRows: []
 };
 
 export const fetchUsersAsync = createAsyncThunk("table/fetchUsers", async (params: GetUsersParams) => {
@@ -37,7 +40,13 @@ export const tableSlice = createSlice({
         }
         return 0
       })
-    }
+    },
+    selectARow(state, action: PayloadAction<User, string>) {
+      state.checkedRows.push(action.payload)
+    },
+    deselectARow(state, action: PayloadAction<User, string>) {
+      state.checkedRows = state.checkedRows.filter((row: User) => row.id !== action.payload.id)
+    },
   },
   extraReducers: builders => {
     builders
@@ -65,5 +74,6 @@ export const tableSlice = createSlice({
   }
 })
 
-export const { sortByFname } = tableSlice.actions
+export const { sortByFname, selectARow, deselectARow } = tableSlice.actions
+export const selectCheckedRows = (state: RootState) => state.table.checkedRows
 export default tableSlice.reducer
