@@ -1,4 +1,4 @@
-import {OutputAreaProps} from "./types";
+import { OutputAreaProps } from "./types";
 import "./styles.css"
 
 function OutputArea(props: OutputAreaProps) {

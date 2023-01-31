@@ -1,5 +1,5 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {GetUsersParams, User} from "../../app/commonTypes";
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { GetUsersParams, User } from "../../app/commonTypes";
 import ApiClient from "../../app/ApiClient";
 
 export interface TableState {

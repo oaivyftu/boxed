@@ -1,9 +1,9 @@
-import {PaginationProps} from "./types";
+import { PaginationProps } from "./types";
 import "./styles.css"
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {DEFAULT_MAX_RECORDS_PER_PAGE} from "../../app/constants";
-import {fetchUsersAsync} from "../Table/tableSlice";
-import {urlParams2Object} from "../../app/utils";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { DEFAULT_MAX_RECORDS_PER_PAGE } from "../../app/constants";
+import { fetchUsersAsync } from "../Table/tableSlice";
+import { urlParams2Object } from "../../app/utils";
 
 function Pagination(props: PaginationProps) {
   const dispatch = useAppDispatch()

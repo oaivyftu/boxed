@@ -13,7 +13,7 @@
     font-size: 17px;
     border: 1px solid grey;
     cursor: pointer;
-    margin: 0 4px;
+    margin: 4px;
 }
 
 .page-btn:hover {

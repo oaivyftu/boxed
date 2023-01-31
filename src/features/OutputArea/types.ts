@@ -1,3 +1,1 @@
-export interface OutputAreaProps {
-
-}
+export interface OutputAreaProps {}

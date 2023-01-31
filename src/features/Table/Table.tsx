@@ -1,13 +1,13 @@
 import { TableProps } from './types'
-import React, {ReactDOM, ReactNode, useEffect} from "react";
+import React, { ReactNode, useEffect } from "react";
 import './styles.css'
 import SearchInput from "../SearchInput/SearchInput";
 import Pagination from "../Pagination/Pagination";
 import OutputArea from "../OutputArea/OutputArea";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {fetchUsersAsync, sortByFname} from "./tableSlice";
-import {User} from "../../app/commonTypes";
-import {urlParams2Object} from "../../app/utils";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { fetchUsersAsync, sortByFname } from "./tableSlice";
+import { User } from "../../app/commonTypes";
+import { urlParams2Object } from "../../app/utils";
 
 function Table(props: TableProps) {
   const dispatch = useAppDispatch()
@@ -25,45 +25,43 @@ function Table(props: TableProps) {
     }
   }, [tableStatus, dispatch])
 
-  let table: ReactNode
-
-  if (tableStatus === 'loading') {
-    table = "Loading..."
-  } else if (tableStatus === 'succeeded') {
-    table = (
-      <table className="table-main">
-        <thead>
-        <tr>
-          <th></th>
-          <th>ID</th>
-          <th>Avatar</th>
-          <th className="th-sortable" onClick={() => dispatch(sortByFname(sort === 'asc' ? 'desc' : 'asc'))}>First Name {sort === 'asc' ? "⇧" : "⇩"}</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Gender</th>
-          <th>IP Address</th>
-        </tr>
-        </thead>
-        <tbody>
-          {users.length === 0 && "No data"}
-          {users.map(({ id, email, avatar, gender, first_name, last_name, ip_address }: User) => (
-            <tr className="table-row" key={id}>
-              <td><input type="checkbox" /></td>
-              <td>{id}</td>
-              <td><img src={avatar} alt="" /></td>
-              <td>{first_name}</td>
-              <td>{last_name}</td>
-              <td>{email}</td>
-              <td>{gender}</td>
-              <td>{ip_address}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    )
-  } else {
-    table = <div>{error}</div>
-  }
+  const table: ReactNode = (
+    <table className="table-main">
+      <thead>
+      <tr>
+        <th></th>
+        <th>ID</th>
+        <th>Avatar</th>
+        <th className="th-sortable" onClick={() => dispatch(sortByFname(sort === 'asc' ? 'desc' : 'asc'))}>First Name {sort === 'asc' ? "⇧" : "⇩"}</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Gender</th>
+        <th>IP Address</th>
+      </tr>
+      </thead>
+      <tbody>
+        {tableStatus === 'loading' && "Loading..."}
+        {tableStatus === 'failed' && <div>{error}</div>}
+        {tableStatus === 'succeeded' && (
+          <>
+            {users.length === 0 && "No data"}
+            {users.map(({ id, email, avatar, gender, first_name, last_name, ip_address }: User) => (
+              <tr className="table-row" key={id}>
+                <td><input type="checkbox" /></td>
+                <td>{id}</td>
+                <td><img src={avatar} alt="" /></td>
+                <td>{first_name}</td>
+                <td>{last_name}</td>
+                <td>{email}</td>
+                <td>{gender}</td>
+                <td>{ip_address}</td>
+              </tr>
+            ))}
+          </>
+        )}
+      </tbody>
+    </table>
+  )
 
   const pagination = users.length ? <Pagination /> : null
 

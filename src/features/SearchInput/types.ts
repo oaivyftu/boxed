@@ -1,3 +1,1 @@
-export interface SearchInputProps {
-
-}
+export interface SearchInputProps {}

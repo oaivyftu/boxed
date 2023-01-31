@@ -1,6 +1,6 @@
-import {GetUsersParams, User} from "./commonTypes";
+import { GetUsersParams, User } from "./commonTypes";
 import mockUsers from './mockData.json'
-import {DEFAULT_MAX_RECORDS_PER_PAGE} from "./constants";
+import { DEFAULT_MAX_RECORDS_PER_PAGE } from "./constants";
 
 const UsersController = {
   getUsers({ s, page, limit = DEFAULT_MAX_RECORDS_PER_PAGE }: GetUsersParams): { data: User[], count: number } {

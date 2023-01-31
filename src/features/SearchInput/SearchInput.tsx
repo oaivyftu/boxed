@@ -1,8 +1,8 @@
-import {SearchInputProps} from "./types";
+import { SearchInputProps } from "./types";
 import "./styles.css"
-import {FormEvent, useEffect, useState} from "react";
-import {useAppDispatch} from "../../app/hooks";
-import {fetchUsersAsync} from "../Table/tableSlice";
+import { FormEvent, useEffect, useState } from "react";
+import { useAppDispatch } from "../../app/hooks";
+import { fetchUsersAsync } from "../Table/tableSlice";
 
 function SearchInput(props: SearchInputProps) {
   const dispatch = useAppDispatch()
