@@ -1,0 +1,36 @@
+.pagination-container {
+    margin: 0 0 15px;
+}
+
+.page-list {
+    text-align: center;
+}
+
+.page-btn {
+    padding: 10px;
+    background: white;
+    color: black;
+    font-size: 17px;
+    border: 1px solid grey;
+    cursor: pointer;
+    margin: 0 4px;
+}
+
+.page-btn:hover {
+    background: #dddddd;
+}
+
+.page-btn.page-btn-active {
+    background: #2196F3;
+    color: white;
+    cursor: initial;
+}
+
+.page-btn:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+}
+
+.page-btn:disabled:hover {
+    background: white;
+}
