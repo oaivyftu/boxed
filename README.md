@@ -1,6 +1,4 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) TS template.
+# Boxed
 
 ## Available Scripts
 
@@ -39,10 +37,10 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-### npm run lint
+### `npm run lint`
 
 Checks the codebase against eslint rules to find potential format errors.
 
-### npm run lint:fix
+### `npm run lint:fix`
 
 Checks the codebase against eslint rules to find format errors and fix them automatically.
