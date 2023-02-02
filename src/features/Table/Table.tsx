@@ -1,14 +1,14 @@
 import { TableProps } from './types'
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode, useEffect } from "react"
 import './styles.css'
-import SearchInput from "features/SearchInput/SearchInput";
-import Pagination from "features/Pagination/Pagination";
-import OutputArea from "features/OutputArea/OutputArea";
-import { useAppDispatch, useAppSelector } from "app/hooks";
-import { deselectARow, fetchUsersAsync, selectARow, selectCheckedRows, sortByFname } from "./tableSlice";
-import { User } from "app/commonTypes";
-import { urlParams2Object } from "app/utils";
-import { DEFAULT_MAX_RECORDS_PER_PAGE } from "app/constants";
+import SearchInput from "features/SearchInput/SearchInput"
+import Pagination from "features/Pagination/Pagination"
+import OutputArea from "features/OutputArea/OutputArea"
+import { useAppDispatch, useAppSelector } from "app/hooks"
+import { deselectARow, fetchUsersAsync, selectARow, selectCheckedRows, sortByFname } from "./tableSlice"
+import { User } from "app/commonTypes"
+import { urlParams2Object } from "app/utils"
+import { DEFAULT_MAX_RECORDS_PER_PAGE } from "app/constants"
 
 function Table(props: TableProps) {
   const dispatch = useAppDispatch()

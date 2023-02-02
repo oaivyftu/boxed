@@ -1,11 +1,11 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import tableReducer from '../features/Table/tableSlice';
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
+import tableReducer from '../features/Table/tableSlice'
 
 export const store = configureStore({
   reducer: {
     table: tableReducer
   },
-});
+})
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

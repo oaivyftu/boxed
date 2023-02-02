@@ -1,10 +1,10 @@
-import React from 'react';
-import { render, screen, within } from 'test-utils';
-import userEvent from '@testing-library/user-event';
+import React from 'react'
+import { render, screen, within } from 'test-utils'
+import userEvent from '@testing-library/user-event'
 import Table from '../Table'
-import ApiClient, { UsersController } from "app/ApiClient";
-import { GetUsersParams } from "../../../app/commonTypes";
-import { DEFAULT_MAX_RECORDS_PER_PAGE } from "../../../app/constants";
+import ApiClient, { UsersController } from "app/ApiClient"
+import { GetUsersParams } from "../../../app/commonTypes"
+import { DEFAULT_MAX_RECORDS_PER_PAGE } from "../../../app/constants"
 import mockUsers from './mockUsers.json'
 
 async function mockGetUsers(params: GetUsersParams) {
@@ -21,14 +21,14 @@ describe("Table component", () => {
   afterEach(() => {
     jest.restoreAllMocks()
     window.history.pushState(null, "", "/")
-  });
+  })
 
   it('fetches & receives users when loaded', async () => {
     render(<Table />, {})
 
     expect(screen.getByText(/Loading\.\.\./i)).toBeInTheDocument()
     expect(await screen.findAllByTestId("user-record")).toHaveLength(DEFAULT_MAX_RECORDS_PER_PAGE)
-  });
+  })
 
   it('should be able to search and display user results', async () => {
     render(<Table />)
@@ -76,7 +76,7 @@ describe("Table component", () => {
     expect(await screen.findAllByTestId("user-record")).toHaveLength(10)
     expect(screen.getAllByRole("button", { name: /\d/ })).toHaveLength(2)
     expect(screen.getByRole("button", { name: /2/ })).toHaveClass("page-btn-active")
-  });
+  })
 
   it('should be able to show no data when url params are inappropriate', async () => {
     const query = new URLSearchParams()

@@ -1,8 +1,8 @@
 import React, { PropsWithChildren, ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
-import { Provider } from 'react-redux';
-import tableReducer from 'features/Table/tableSlice';
-import { configureStore, PreloadedState } from "@reduxjs/toolkit";
+import { Provider } from 'react-redux'
+import tableReducer from 'features/Table/tableSlice'
+import { configureStore, PreloadedState } from "@reduxjs/toolkit"
 import { RootState } from 'app/store'
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {

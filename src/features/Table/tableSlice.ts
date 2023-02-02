@@ -1,7 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GetUsersParams, User } from "app/commonTypes";
-import ApiClient from "app/ApiClient";
-import { RootState } from "app/store";
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { GetUsersParams, User } from "app/commonTypes"
+import ApiClient from "app/ApiClient"
+import { RootState } from "app/store"
+import { genSortCompareFn } from "app/utils"
 
 export interface TableState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -18,7 +19,7 @@ const initialState: TableState = {
   totalRows: 0,
   sort: 'asc',
   checkedRows: []
-};
+}
 
 export const fetchUsersAsync = createAsyncThunk("table/fetchUsers", async (params: GetUsersParams) => {
   return await ApiClient.getUsers(params)
@@ -31,15 +32,8 @@ export const tableSlice = createSlice({
     sortByFname(state, action: PayloadAction<'asc' | 'desc', string>) {
       const sort = action.payload
       state.sort = sort
-      state.data = state.data.sort((a, b) => {
-        if (a.first_name < b.first_name) {
-          return sort === 'asc' ? -1 : 1
-        }
-        if (a.first_name > b.first_name) {
-          return sort === 'asc' ? 1 : -1
-        }
-        return 0
-      })
+      const sortCompareFn = genSortCompareFn(sort)
+      state.data = state.data.sort(sortCompareFn)
     },
     selectARow(state, action: PayloadAction<User, string>) {
       state.checkedRows.push(action.payload)
@@ -56,15 +50,8 @@ export const tableSlice = createSlice({
       .addCase(fetchUsersAsync.fulfilled, (state, { payload: { data, count } }) => {
         state.status = 'succeeded'
         state.sort = 'asc'
-        state.data = data.sort((a, b) => {
-          if (a.first_name < b.first_name) {
-            return -1
-          }
-          if (a.first_name > b.first_name) {
-            return 1
-          }
-          return 0
-        })
+        const sortCompareFn = genSortCompareFn('asc')
+        state.data = data.sort(sortCompareFn)
         state.totalRows = count
       })
       .addCase(fetchUsersAsync.rejected, (state, action) => {

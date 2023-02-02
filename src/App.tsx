@@ -1,4 +1,4 @@
-import './App.css';
+import './App.css'
 import Table from 'features/Table/Table'
 
 function App() {
@@ -6,7 +6,7 @@ function App() {
     <div className="wrapper">
       <Table />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
