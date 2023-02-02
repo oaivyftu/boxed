@@ -1,14 +1,14 @@
 import { TableProps } from './types'
 import React, { ReactNode, useEffect } from "react";
 import './styles.css'
-import SearchInput from "../SearchInput/SearchInput";
-import Pagination from "../Pagination/Pagination";
-import OutputArea from "../OutputArea/OutputArea";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import SearchInput from "features/SearchInput/SearchInput";
+import Pagination from "features/Pagination/Pagination";
+import OutputArea from "features/OutputArea/OutputArea";
+import { useAppDispatch, useAppSelector } from "app/hooks";
 import { deselectARow, fetchUsersAsync, selectARow, selectCheckedRows, sortByFname } from "./tableSlice";
-import { User } from "../../app/commonTypes";
-import { urlParams2Object } from "../../app/utils";
-import { DEFAULT_MAX_RECORDS_PER_PAGE } from "../../app/constants";
+import { User } from "app/commonTypes";
+import { urlParams2Object } from "app/utils";
+import { DEFAULT_MAX_RECORDS_PER_PAGE } from "app/constants";
 
 function Table(props: TableProps) {
   const dispatch = useAppDispatch()
@@ -51,16 +51,16 @@ function Table(props: TableProps) {
       </tr>
       </thead>
       <tbody>
-        {tableStatus === 'loading' && "Loading..."}
-        {tableStatus === 'failed' && <div>{error}</div>}
+      {tableStatus === 'loading' && <tr><td colSpan={8}>Loading...</td></tr>}
+      {tableStatus === 'failed' && <tr><td colSpan={8}>{error}</td></tr>}
         {tableStatus === 'succeeded' && (
           <>
-            {users.length === 0 && "No data"}
+            {users.length === 0 && <tr><td colSpan={8}>No data</td></tr>}
             {users.map((user: User) => {
               const { id, email, avatar, gender, first_name, last_name, ip_address } = user
               return (
-                <tr className="table-row" key={id}>
-                  <td><input type="checkbox" checked={checkedRows.findIndex(row => row.id === id) !== -1} onChange={e => onRowCheck(e, user)} /></td>
+                <tr className="table-row" data-testid="user-record" key={id}>
+                  <td><input type="checkbox" data-testid={`cbox-${id}`} checked={checkedRows.findIndex(row => row.id === id) !== -1} onChange={e => onRowCheck(e, user)} /></td>
                   <td>{id}</td>
                   <td><img src={avatar} alt="" /></td>
                   <td>{first_name}</td>

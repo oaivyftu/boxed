@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GetUsersParams, User } from "../../app/commonTypes";
-import ApiClient from "../../app/ApiClient";
-import { RootState } from "../../app/store";
+import { GetUsersParams, User } from "app/commonTypes";
+import ApiClient from "app/ApiClient";
+import { RootState } from "app/store";
 
 export interface TableState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';

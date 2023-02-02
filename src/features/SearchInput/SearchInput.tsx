@@ -1,8 +1,8 @@
 import { SearchInputProps } from "./types";
 import "./styles.css"
 import { FormEvent, useEffect, useState } from "react";
-import { useAppDispatch } from "../../app/hooks";
-import { fetchUsersAsync } from "../Table/tableSlice";
+import { useAppDispatch } from "app/hooks";
+import { fetchUsersAsync } from "features/Table/tableSlice";
 
 function SearchInput(props: SearchInputProps) {
   const dispatch = useAppDispatch()
@@ -19,12 +19,13 @@ function SearchInput(props: SearchInputProps) {
     const url = new URL(window.location.href)
     const query = new URLSearchParams(url.search)
     query.set('s', search)
+    query.set('page', '1')
     url.search = query.toString()
     window.history.pushState("", "", url.toString())
   }
   return (
     <form className="search-container" onSubmit={onSubmitHandler}>
-      <input type="text" placeholder="Search by first name.." className="search-ip" value={search} onChange={(e) => changeSearch(e.target.value)} />
+      <input type="text" data-testid="search-ip" placeholder="Search by first name.." className="search-ip" value={search} onChange={(e) => changeSearch(e.target.value)} />
       <button className="search-btn">Search</button>
     </form>
   )
