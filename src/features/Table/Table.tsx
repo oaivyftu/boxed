@@ -94,7 +94,7 @@ function Table<RecordType extends { id: number | string }>({ locale = "en", colu
       }
 
       return (
-        <tr className="table-row" data-testid="user-record" key={row.id}>
+        <tr className="table-row" data-testid="data-record" key={row.id}>
           {cboxTd}
           {columns.map(renderTd)}
         </tr>
