@@ -1,40 +1,32 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { GetUsersParams, User } from "app/commonTypes"
+import { GetUsersParams, SorterResult, User } from "app/commonTypes"
 import ApiClient from "app/ApiClient"
 import { RootState } from "app/store"
-import { genSortCompareFn } from "app/utils"
 
-export interface TableState {
+export interface UsersState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   data: User[];
-  sort: 'asc' | 'desc',
+  sorter?: SorterResult<User>;
   totalRows: number;
   checkedRows: User[];
   error?: string;
 }
 
-const initialState: TableState = {
+const initialState: UsersState = {
   status: "idle",
   data: [],
   totalRows: 0,
-  sort: 'asc',
   checkedRows: []
 }
 
-export const fetchUsersAsync = createAsyncThunk("table/fetchUsers", async (params: GetUsersParams) => {
+export const fetchUsersAsync = createAsyncThunk("users/fetchUsers", async (params: GetUsersParams) => {
   return await ApiClient.getUsers(params)
 })
 
-export const tableSlice = createSlice({
-  name: 'table',
+export const usersSlice = createSlice({
+  name: 'users',
   initialState,
   reducers: {
-    sortByFname(state, action: PayloadAction<'asc' | 'desc', string>) {
-      const sort = action.payload
-      state.sort = sort
-      const sortCompareFn = genSortCompareFn(sort)
-      state.data = state.data.sort(sortCompareFn)
-    },
     selectARow(state, action: PayloadAction<User, string>) {
       state.checkedRows.push(action.payload)
     },
@@ -49,9 +41,7 @@ export const tableSlice = createSlice({
       })
       .addCase(fetchUsersAsync.fulfilled, (state, { payload: { data, count } }) => {
         state.status = 'succeeded'
-        state.sort = 'asc'
-        const sortCompareFn = genSortCompareFn('asc')
-        state.data = data.sort(sortCompareFn)
+        state.data = data
         state.totalRows = count
       })
       .addCase(fetchUsersAsync.rejected, (state, action) => {
@@ -61,6 +51,6 @@ export const tableSlice = createSlice({
   }
 })
 
-export const { sortByFname, selectARow, deselectARow } = tableSlice.actions
-export const selectCheckedRows = (state: RootState) => state.table.checkedRows
-export default tableSlice.reducer
+export const { selectARow, deselectARow } = usersSlice.actions
+export const selectCheckedRows = (state: RootState) => state.users.checkedRows
+export default usersSlice.reducer

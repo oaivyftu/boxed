@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
 import { Provider } from 'react-redux'
-import tableReducer from 'features/Table/tableSlice'
+import usersReducer from 'data/users/usersSlice'
 import { configureStore, PreloadedState } from "@reduxjs/toolkit"
 import { RootState } from 'app/store'
 
@@ -11,11 +11,10 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
 }
 
 export const initState: PreloadedState<RootState> = {
-  table: {
+  users: {
     status: "idle",
     data: [],
     totalRows: 0,
-    sort: 'asc',
     checkedRows: []
   }
 }
@@ -24,7 +23,7 @@ export function renderWithProviders(
   ui: ReactElement,
   {
     preloadedState = initState,
-    store = configureStore({ reducer: { table: tableReducer }, preloadedState }),
+    store = configureStore({ reducer: { users: usersReducer }, preloadedState }),
     ...renderOptions
   }: ExtendedRenderOptions = {}
 ) {

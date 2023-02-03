@@ -1,9 +1,9 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
-import tableReducer from '../features/Table/tableSlice'
+import usersReducer from 'data/users/usersSlice'
 
 export const store = configureStore({
   reducer: {
-    table: tableReducer
+    users: usersReducer
   },
 })
 

@@ -13,3 +13,10 @@ export interface GetUsersParams {
   page?: number;
   limit?: number;
 }
+
+export interface SorterResult<T> {
+  order: SortingDirection;
+  field: keyof T;
+}
+
+export type SortingDirection = 'ASC' | 'DESC' | false

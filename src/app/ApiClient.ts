@@ -31,7 +31,7 @@ class ApiClient {
   public getUsers(params: GetUsersParams): Promise<{data: User[]; count: number}> {
     const UsersControllerInstance = new UsersController(mockUsers)
     const { data, count } = UsersControllerInstance.getUsers(params)
-    return new Promise((resolve) => setTimeout(resolve, 2000, { data, count } ))
+    return new Promise((resolve) => setTimeout(resolve, 1000, { data, count } ))
   }
 }
 

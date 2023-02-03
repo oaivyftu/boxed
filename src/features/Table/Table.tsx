@@ -1,89 +1,131 @@
-import { TableProps } from './types'
-import React, { ReactNode, useEffect } from "react"
+import { ColumnsType, TableProps } from './types'
+import React, { ReactNode, useMemo, useState } from "react"
 import './styles.css'
 import SearchInput from "features/SearchInput/SearchInput"
 import Pagination from "features/Pagination/Pagination"
 import OutputArea from "features/OutputArea/OutputArea"
-import { useAppDispatch, useAppSelector } from "app/hooks"
-import { deselectARow, fetchUsersAsync, selectARow, selectCheckedRows, sortByFname } from "./tableSlice"
-import { User } from "app/commonTypes"
-import { urlParams2Object } from "app/utils"
-import { DEFAULT_MAX_RECORDS_PER_PAGE } from "app/constants"
+import { SorterResult, SortingDirection } from "app/commonTypes"
 
-function Table(props: TableProps) {
-  const dispatch = useAppDispatch()
-  const tableStatus = useAppSelector(state => state.table.status)
-  const users = useAppSelector(state => state.table.data)
-  const error = useAppSelector(state => state.table.error)
-  const sort = useAppSelector(state => state.table.sort)
-  const checkedRows: User[] = useAppSelector(selectCheckedRows)
+function Table<RecordType extends { id: number | string }>({ locale = "en", columns, loading, errorMsg, pagination, rowSelection, tableClassName, dataSource, onChange }: TableProps<RecordType>) {
+  const [sortConfig, setSortConfig] = useState<SorterResult<RecordType>>()
+  const loadingComp = loading && <tr><td colSpan={8}>Loading...</td></tr>
 
-  useEffect(() => {
-    if (tableStatus === 'idle') {
-      const query = new URLSearchParams(window.location.search)
-      if (!query.get('page')) query.set('page', '1')
-      if (!query.get('limit')) query.set('limit', String(DEFAULT_MAX_RECORDS_PER_PAGE))
-      dispatch(fetchUsersAsync(urlParams2Object(query)))
-      window.history.pushState("", "", `?${query.toString()}`)
+  const sortedItems = useMemo(() => {
+    const sortableItems = [...dataSource]
+    if (sortConfig) {
+      const IntlInstance = new Intl.Collator(locale, { numeric: true, sensitivity: "base" })
+      if (sortConfig.order === 'ASC') {
+        return sortableItems.sort((a: RecordType, b: RecordType) => IntlInstance.compare(String(a[sortConfig.field]), String(b[sortConfig.field])))
+      }
+      if (sortConfig.order === 'DESC') {
+        return sortableItems.sort((a: RecordType, b: RecordType) => IntlInstance.compare(String(b[sortConfig.field]), String(a[sortConfig.field])))
+      }
     }
-  }, [tableStatus, dispatch])
+    return sortableItems
+  }, [dataSource, locale, sortConfig])
 
-  const onRowCheck = (e: React.ChangeEvent<HTMLInputElement>, user: User) => {
-    if (e.target.checked) {
-      dispatch(selectARow(user))
-    } else {
-      dispatch(deselectARow(user))
+  const requestSort = (field: keyof RecordType) => {
+    let order: SortingDirection = 'ASC'
+    if (sortConfig?.field === field) {
+      if (sortConfig.order === 'ASC') {
+        order = 'DESC'
+      }
+      if (sortConfig.order === 'DESC') {
+        order = false
+      }
     }
+
+    setSortConfig({ field, order })
+  }
+
+  const getSymbolFor = (field: keyof RecordType): string => {
+    let symbol = "↕"
+    if (sortConfig?.field === field) {
+      if (sortConfig.order === 'ASC') {
+        symbol = "↑"
+      }
+      if (sortConfig.order === 'DESC') {
+        symbol = "↓"
+      }
+    }
+
+    return symbol
+  }
+
+  const columnSet = (
+    <>
+      {rowSelection && <th></th>}
+      {columns.map(({ sorter, title, dataIndex: field }) => {
+        let bulk = {}
+        if (sorter) {
+          bulk = {
+            className: "th-sortable",
+            onClick: () => requestSort(field)
+          }
+        }
+        return <th key={String(field)} {...bulk}>{title} {sorter ? getSymbolFor(field) : ""}</th>
+      })}
+    </>
+  )
+
+  const renderRowSet = () => {
+    if (errorMsg) return (
+      <tr>
+        <td colSpan={8}>{errorMsg}</td>
+      </tr>
+    )
+    if (!dataSource.length) return (
+      <tr>
+        <td colSpan={8}>No data</td>
+      </tr>
+    )
+    return sortedItems.map((row) => {
+      const renderTd = ({ dataIndex, render }: ColumnsType<RecordType>) => {
+        if (render) {
+          return <td key={String(dataIndex)}>{render(row)}</td>
+        }
+        return <td key={String(dataIndex)}>{String(row[dataIndex])}</td>
+      }
+
+      let cboxTd: ReactNode = null
+      if (rowSelection) {
+        const { selectedRows, onSelectRow } = rowSelection
+        cboxTd = <td><input type="checkbox" data-testid={`cbox-${row.id}`} checked={selectedRows.findIndex(ckRow => ckRow.id === row.id) !== -1} onChange={e => onSelectRow(e, row)} /></td>
+      }
+
+      return (
+        <tr className="table-row" data-testid="user-record" key={row.id}>
+          {cboxTd}
+          {columns.map(renderTd)}
+        </tr>
+      )
+    })
   }
 
   const table: ReactNode = (
-    <table className="table-main">
+    <table className={`table-main ${tableClassName || ""}`}>
       <thead>
       <tr>
-        <th></th>
-        <th>ID</th>
-        <th>Avatar</th>
-        <th className="th-sortable" onClick={() => dispatch(sortByFname(sort === 'asc' ? 'desc' : 'asc'))}>First Name {sort === 'asc' ? "⇧" : "⇩"}</th>
-        <th>Last Name</th>
-        <th>Email</th>
-        <th>Gender</th>
-        <th>IP Address</th>
+        {columnSet}
       </tr>
       </thead>
       <tbody>
-      {tableStatus === 'loading' && <tr><td colSpan={8}>Loading...</td></tr>}
-      {tableStatus === 'failed' && <tr><td colSpan={8}>{error}</td></tr>}
-        {tableStatus === 'succeeded' && (
-          <>
-            {users.length === 0 && <tr><td colSpan={8}>No data</td></tr>}
-            {users.map((user: User) => {
-              const { id, email, avatar, gender, first_name, last_name, ip_address } = user
-              return (
-                <tr className="table-row" data-testid="user-record" key={id}>
-                  <td><input type="checkbox" data-testid={`cbox-${id}`} checked={checkedRows.findIndex(row => row.id === id) !== -1} onChange={e => onRowCheck(e, user)} /></td>
-                  <td>{id}</td>
-                  <td><img src={avatar} alt="" /></td>
-                  <td>{first_name}</td>
-                  <td>{last_name}</td>
-                  <td>{email}</td>
-                  <td>{gender}</td>
-                  <td>{ip_address}</td>
-                </tr>
-              )
-            })}
-          </>
-        )}
+      {loadingComp}
+      {!loading && renderRowSet()}
       </tbody>
     </table>
   )
 
-  const pagination = users.length ? <Pagination /> : null
+  const onPaginationChange = (current: number) => onChange?.({ current })
+  const paginationSet = dataSource.length > 0 && pagination && <Pagination {...pagination} onChange={onPaginationChange} />
+
+  const onSearchChange = (search: string) => onChange?.({ search, current: 1 })
 
   return (
     <div className="table-container">
-      <SearchInput />
+      <SearchInput onChange={onSearchChange} />
       {table}
-      {pagination}
+      {paginationSet}
       <OutputArea />
     </div>
   )

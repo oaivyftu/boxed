@@ -1,11 +1,8 @@
 import { SearchInputProps } from "./types"
 import "./styles.css"
 import { FormEvent, useEffect, useState } from "react"
-import { useAppDispatch } from "app/hooks"
-import { fetchUsersAsync } from "features/Table/tableSlice"
 
-function SearchInput(props: SearchInputProps) {
-  const dispatch = useAppDispatch()
+function SearchInput({ onChange }: SearchInputProps) {
   const [search, changeSearch] = useState<string>("")
   useEffect(() => {
     const query = new URLSearchParams(window.location.search)
@@ -13,15 +10,8 @@ function SearchInput(props: SearchInputProps) {
   }, [])
   const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch(fetchUsersAsync({
-      s: search
-    }))
-    const url = new URL(window.location.href)
-    const query = new URLSearchParams(url.search)
-    query.set('s', search)
-    query.set('page', '1')
-    url.search = query.toString()
-    window.history.pushState("", "", url.toString())
+
+    onChange(search)
   }
   return (
     <form className="search-container" onSubmit={onSubmitHandler}>
