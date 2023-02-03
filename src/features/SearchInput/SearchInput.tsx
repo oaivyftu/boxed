@@ -1,6 +1,6 @@
+import { FormEvent, useEffect, useState } from "react"
 import { SearchInputProps } from "./types"
 import "./styles.css"
-import { FormEvent, useEffect, useState } from "react"
 
 function SearchInput({ onChange }: SearchInputProps) {
   const [search, changeSearch] = useState<string>("")

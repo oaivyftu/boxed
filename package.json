@@ -34,7 +34,13 @@
     "rules": {
       "object-curly-spacing": ["error", "always"],
       "eol-last": ["error", "always"],
-      "semi": ["error", "never"]
+      "semi": ["error", "never"],
+      "import/order": [
+        "error",
+        {
+          "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"]
+        }
+      ]
     }
   },
   "browserslist": {

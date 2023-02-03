@@ -1,6 +1,6 @@
+import { DEFAULT_MAX_RECORDS_PER_PAGE } from "app/constants"
 import { PaginationProps } from "./types"
 import "./styles.css"
-import { DEFAULT_MAX_RECORDS_PER_PAGE } from "app/constants"
 
 function Pagination({ total, current = 1, limit, defaultLimit = DEFAULT_MAX_RECORDS_PER_PAGE, onChange }: PaginationProps) {
   const pageCount = Math.ceil(total/(limit || defaultLimit))

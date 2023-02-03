@@ -1,10 +1,10 @@
-import { ColumnsType, TableProps } from './types'
 import React, { ReactNode, useMemo, useState } from "react"
 import './styles.css'
 import SearchInput from "features/SearchInput/SearchInput"
 import Pagination from "features/Pagination/Pagination"
 import OutputArea from "features/OutputArea/OutputArea"
 import { SorterResult, SortingDirection } from "app/commonTypes"
+import { ColumnsType, TableProps } from './types'
 
 function Table<RecordType extends { id: number | string }>({ locale = "en", columns, loading, errorMsg, pagination, rowSelection, tableClassName, dataSource, onChange }: TableProps<RecordType>) {
   const [sortConfig, setSortConfig] = useState<SorterResult<RecordType>>()

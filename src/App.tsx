@@ -1,13 +1,13 @@
 import './App.css'
 import Table from 'features/Table/Table'
-import { useAppDispatch, useAppSelector } from "./app/hooks"
-import { User } from "./app/commonTypes"
-import { deselectARow, fetchUsersAsync, selectARow, selectCheckedRows } from "./data/users/usersSlice"
+import { useAppDispatch, useAppSelector } from "app/hooks"
+import { User } from "app/commonTypes"
+import { deselectARow, fetchUsersAsync, selectARow, selectCheckedRows } from "data/users/usersSlice"
 import React, { useEffect } from "react"
-import { DEFAULT_MAX_RECORDS_PER_PAGE } from "./app/constants"
-import { urlParams2Object } from "./app/utils"
-import { ColumnsType, TableChangeParams } from "./features/Table/types"
-import { TablePaginationConfig } from "./features/Pagination/types"
+import { DEFAULT_MAX_RECORDS_PER_PAGE } from "app/constants"
+import { urlParams2Object } from "app/utils"
+import { ColumnsType, TableChangeParams } from "features/Table/types"
+import { TablePaginationConfig } from "features/Pagination/types"
 
 const columns: ColumnsType<User>[] = [
   {
